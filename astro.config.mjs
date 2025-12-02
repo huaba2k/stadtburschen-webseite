@@ -9,7 +9,7 @@ export default defineConfig({
     tailwind(),
     react(),
     sanity({
-      projectId: 'DEINE_PROJECT_ID', // Hier wieder die ID
+      projectId: '5wk79lvj', // Hier wieder die ID
       dataset: 'production',
       useCdn: true, // Macht es schneller
     }),
