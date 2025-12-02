@@ -1,7 +1,7 @@
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
+import { table } from '@sanity/table'; // Falls du das Table Plugin hast
 import { schemaTypes } from './schema/index';
-import { table } from '@sanity/table';
 
 // PRÜFE DIESE ZEILE GENAU:
 const projectId = '5wk79lvj'; // Nur a-z und 0-9. Kein "_" und kein "A-Z"
@@ -12,8 +12,12 @@ export default defineConfig({
   title: 'Stadtburschen Admin',
   projectId,
   dataset,
-  basePath: '/admin', // Das muss auch noch drin sein
+  
+  // WICHTIG: Diese Zeile muss da sein!
+  basePath: '/admin',
+
   plugins: [structureTool(), table()],
+
   schema: {
     types: schemaTypes,
   },

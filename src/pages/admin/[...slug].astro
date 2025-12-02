@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 export function getStaticPaths() {
   return [
     { params: { slug: undefined } },
@@ -11,11 +13,10 @@ export function getStaticPaths() {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stadtburschen Admin</title>
-
+    
     <script is:inline>
       window.global = window;
     </script>
-    
   </head>
   <body>
     <div id="app"></div>
