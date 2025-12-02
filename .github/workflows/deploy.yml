@@ -22,10 +22,16 @@ jobs:
       run: npm run build
       
     - name: FTP Deploy to Manitu
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./dist/
-        server-dir: /web/new.stadtburschen.de/  # Oder /public_html/ - je nachdem wie es bei Manitu heißt
+        server-dir: /web/new.stadtburschen.de/
+        protocol: ftps             # WICHTIG: Erzwingt Verschlüsselung (mag Manitu)
+        security: loose            # WICHTIG: Toleranter bei Zertifikaten, verhindert den Abbruch
+        exclude: |
+          **/.git*
+          **/.github*
+          **/node_modules/**
