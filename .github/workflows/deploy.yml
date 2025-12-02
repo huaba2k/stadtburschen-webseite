@@ -3,8 +3,8 @@ name: Deploy to Manitu
 on:
   push:
     branches: [ master ]
-
-    repository_dispatch:
+  # DAS IST NEU: Erlaubt den Start von außen
+  repository_dispatch:
     types: [sanity-update]
 
 jobs:
