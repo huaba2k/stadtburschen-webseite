@@ -21,7 +21,7 @@ jobs:
     - name: Build Project
       run: npm run build
       
-    - name: SFTP Deploy to Manitu
+    - name: FTP Deploy to Manitu
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: ${{ secrets.FTP_SERVER }}
@@ -29,8 +29,8 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./dist/
         server-dir: /web/new.stadtburschen.de/
-        protocol: sftp             # HIER: sftp (SSH Protokoll)
-        port: 22                   # HIER: Port 22
+        protocol: ftp              # HIER: ftp statt ftps
+        port: 21                   # HIER: Port explizit setzen
         exclude: |
           **/.git*
           **/.github*
