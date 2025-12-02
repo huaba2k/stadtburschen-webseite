@@ -1,10 +1,9 @@
 import { sanityClient } from "sanity:client";
-// Wir importieren ALLES als Objekt 'SanityImageURL'
 import * as SanityImageURL from "@sanity/image-url";
 
-// Der Trick: Manche Server wollen .default, manche das Objekt selbst.
-// Wir nehmen .default, falls es da ist, sonst das Objekt.
-const builder = (SanityImageURL.default || SanityImageURL)(sanityClient);
+// Wir nutzen 'as any', um TypeScript ruhig zu stellen.
+// Der Server braucht diese Weiche, um sicher zu laufen.
+const builder = ((SanityImageURL as any).default || SanityImageURL)(sanityClient);
 
 export function urlFor(source: any) {
   return builder.image(source);
