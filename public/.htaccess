@@ -1,15 +1,23 @@
-# WICHTIG: Diese Option ist bei Manitu oft Pflicht für Rewrite-Regeln
 Options +FollowSymLinks
+RewriteEngine On
+RewriteBase /
 
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /
+# 1. Admin-Panel (Wichtig, damit Sanity läuft)
+RewriteCond %{REQUEST_URI} ^/admin/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^.*$ /admin/index.html [L]
 
-  # Regel: Wenn jemand /admin/irgendwas aufruft...
-  RewriteCond %{REQUEST_URI} ^/admin/
-  # ...und es keine echte Datei ist (wie ein Bild)...
-  RewriteCond %{REQUEST_FILENAME} !-f
-  # ...dann lade die Admin-Startseite (React App)
-  RewriteRule ^.*$ /admin/index.html [L]
+# 2. Erzwinge HTTPS (Optional, aber gut)
+# RewriteCond %{HTTPS} !=on
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-</IfModule>
+# 3. Astro Clean URLs
+# Wenn die angeforderte Datei mit .html existiert, nimm sie (aber zeig .html nicht an)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*)$ $1.html [L]
+
+# 4. Wenn es ein Ordner ist (z.B. /kontakt/), nimm die index.html darin
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
