@@ -1,9 +1,7 @@
 ---
-// WICHTIG: Wir sagen Astro, welche Pfade es bauen soll.
-// Wir bauen nur den Basis-Pfad "/admin", den Rest macht React im Browser.
 export function getStaticPaths() {
   return [
-    { params: { slug: undefined } }, // Das entspricht "/admin"
+    { params: { slug: undefined } },
   ];
 }
 ---
@@ -13,6 +11,11 @@ export function getStaticPaths() {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stadtburschen Admin</title>
+
+    <script is:inline>
+      window.global = window;
+    </script>
+    
   </head>
   <body>
     <div id="app"></div>
