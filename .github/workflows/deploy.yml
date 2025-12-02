@@ -34,7 +34,7 @@ jobs:
         server-dir: /web/new.stadtburschen.de/
         
         # WICHTIG: SFTP aktivieren
-        protocol: sftp
+        protocol: ftps
         port: 23
         
         # Das hier verhindert, dass er bei unbekannten Schlüsseln abbricht
