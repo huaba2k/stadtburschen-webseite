@@ -24,9 +24,9 @@ jobs:
     - name: FTP Deploy to Manitu
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
-        server: ${ secrets.FTP_SERVER }
-        username: ${ secrets.FTP_USERNAME }
-        password: ${ secrets.FTP_PASSWORD }
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./dist/
         server-dir: /web/new.stadtburschen.de/
         protocol: ftps             # WICHTIG: Erzwingt Verschlüsselung (mag Manitu)
