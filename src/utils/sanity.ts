@@ -1,14 +1,17 @@
 import { sanityClient } from "sanity:client";
-import { createRequire } from "module"; 
+import * as SanityImageUrl from "@sanity/image-url";
 
-// TRICK 17: Wir nutzen 'createRequire'.
-// Das zwingt den Server, das Paket auf die klassische Node-Art zu laden.
-// Das funktioniert IMMER, egal was Vite oder TypeScript sagen.
-const require = createRequire(import.meta.url);
-const imageUrlBuilder = require("@sanity/image-url");
+// Wir zwingen TypeScript, uns machen zu lassen
+const lib = SanityImageUrl as any;
 
-// Sicherheitsnetz: Manchmal ist die Funktion direkt da, manchmal im .default
-const builder = (imageUrlBuilder.default || imageUrlBuilder)(sanityClient);
+// Wir suchen die Funktion: 
+// 1. Ist es der 'default' Export?
+// 2. Oder heißt die Funktion 'imageUrlBuilder'?
+// 3. Oder ist das Paket selbst die Funktion?
+const builderFn = lib.default || lib.imageUrlBuilder || lib;
+
+// Jetzt führen wir die gefundene Funktion aus
+const builder = builderFn(sanityClient);
 
 export function urlFor(source: any) {
   return builder.image(source);

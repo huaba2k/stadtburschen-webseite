@@ -18,4 +18,10 @@ export default defineConfig({
     assets: 'assets'
   },
   output: 'static', // Wir bleiben statisch für maximale Geschwindigkeit
+
+  vite: {
+    ssr: {
+      noExternal: ['@sanity/image-url', '@portabletext/react']
+    }
+  }
 });
