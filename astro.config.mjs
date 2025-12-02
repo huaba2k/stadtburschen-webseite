@@ -24,4 +24,4 @@ export default defineConfig({
       noExternal: ['@sanity/image-url', '@portabletext/react']
     }
   }
-});
+}); 
