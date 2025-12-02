@@ -1,6 +1,11 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # 1. Regel: Alles im Admin-Bereich auf die Admin-HTML leiten
+  RewriteRule ^admin/.*$ /admin/index.html [L]
+
+  # 2. Regel: Für den Rest der Seite (SPA Fallback, falls nötig)
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d

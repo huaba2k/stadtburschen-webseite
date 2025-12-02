@@ -1,5 +1,11 @@
 ---
-export const prerender = false; // Wichtig: Admin wird live gerendert, nicht statisch
+// WICHTIG: Wir sagen Astro, welche Pfade es bauen soll.
+// Wir bauen nur den Basis-Pfad "/admin", den Rest macht React im Browser.
+export function getStaticPaths() {
+  return [
+    { params: { slug: undefined } }, // Das entspricht "/admin"
+  ];
+}
 ---
 <!DOCTYPE html>
 <html lang="de">
@@ -12,7 +18,7 @@ export const prerender = false; // Wichtig: Admin wird live gerendert, nicht sta
     <div id="app"></div>
     <script>
       import { renderStudio } from 'sanity';
-      import config from '../../../sanity.config'; // Pfad anpassen falls nötig
+      import config from '../../../sanity.config';
 
       renderStudio(document.getElementById('app'), config);
     </script>
