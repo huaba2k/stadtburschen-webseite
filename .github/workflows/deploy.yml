@@ -35,7 +35,7 @@ jobs:
         
         # WICHTIG: SFTP aktivieren
         protocol: sftp
-        port: 22
+        port: 23
         
         # Das hier verhindert, dass er bei unbekannten Schlüsseln abbricht
         security: loose
