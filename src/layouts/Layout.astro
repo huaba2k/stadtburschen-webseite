@@ -1,4 +1,6 @@
 ---
+import Header from '../components/Header.astro';
+
 interface Props {
 	title: string;
 }
@@ -20,8 +22,34 @@ const { title } = Astro.props;
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 		
 		<title>{title}</title>
+
+		<script is:inline>
+			const theme = (() => {
+				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+					return localStorage.getItem('theme');
+				}
+				if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+					return 'dark';
+				}
+				return 'light';
+			})();
+		
+			if (theme === 'dark') {
+				document.documentElement.classList.add('dark');
+			} else {
+				document.documentElement.classList.remove('dark');
+			}
+		</script>
 	</head>
-	<body class="bg-burschen-DEFAULT text-white font-sans antialiased">
+	
+	<body class="bg-white text-gray-900 dark:bg-burschen-DEFAULT dark:text-gray-100 font-sans antialiased transition-colors duration-300">
+		
+		<Header />
+		
 		<slot />
+		
+		<footer class="py-8 text-center text-sm text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-white/10 mt-20">
+			&copy; {new Date().getFullYear()} Stadtburschen Freising. <a href="/impressum" class="hover:text-burschen-blau dark:hover:text-burschen-gold">Impressum</a>
+		</footer>
 	</body>
 </html>
