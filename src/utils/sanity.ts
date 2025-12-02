@@ -1,14 +1,11 @@
-// Wir importieren den Client
 import { sanityClient } from "sanity:client";
+// Wir importieren ALLES als Objekt 'SanityImageURL'
+import * as SanityImageURL from "@sanity/image-url";
 
-// TRICK: Wir nennen es 'sanityImageBuilder' statt 'imageUrlBuilder', 
-// um Namenskonflikte mit Typen zu vermeiden.
-import sanityImageBuilder from "@sanity/image-url";
+// Der Trick: Manche Server wollen .default, manche das Objekt selbst.
+// Wir nehmen .default, falls es da ist, sonst das Objekt.
+const builder = (SanityImageURL.default || SanityImageURL)(sanityClient);
 
-// Den Builder initialisieren
-const builder = sanityImageBuilder(sanityClient);
-
-// Die Funktion, die wir überall nutzen
 export function urlFor(source: any) {
   return builder.image(source);
 }
