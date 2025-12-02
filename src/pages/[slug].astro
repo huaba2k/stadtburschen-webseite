@@ -66,29 +66,31 @@ const { page } = Astro.props;
       {page.title}
     </h1>
 
-    <div class="space-y-16">
+    <div class="flex flex-col gap-12 md:gap-16">
       {page.pageBuilder && page.pageBuilder.map((block: any) => {
         
         // A. TEXT BLOCK
         if (block._type === 'textSection') {
           return (
-            <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200">
+            // ÄNDERUNG 2: 'mb-0' verhindert, dass der Textblock eigenen Abstand hinzufügt
+            <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 mb-0">
               {block.heading && <h2 class="text-2xl font-bold mb-4 text-burschen-blau dark:text-white">{block.heading}</h2>}
               <PortableText value={block.content} />
             </div>
           );
         }
 
-        // B. BILDER GALERIE (Jetzt interaktiv mit React)
+        // B. BILDER GALERIE (React)
         if (block._type === 'gallery') {
-          // WICHTIG: client:load sagt Astro, dass diese Komponente 
-          // interaktives JavaScript im Browser braucht.
           return (
-            <Gallery 
-              client:load 
-              images={block.images} 
-              headline={block.headline} 
-            />
+            // Der Wrapper hier braucht keine extra margins mehr, das macht jetzt das 'gap' oben
+            <div class="w-full">
+              <Gallery 
+                client:load 
+                images={block.images} 
+                headline={block.headline} 
+              />
+            </div>
           );
         }
 
@@ -130,7 +132,7 @@ const { page } = Astro.props;
         // D. TABELLE
         if (block._type === 'tableSection') {
           return (
-            <div class="my-12">
+            <div class="w-full">
               {block.title && <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">{block.title}</h3>}
               <div class="overflow-x-auto rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                 <table class="w-full text-left text-sm md:text-base">
