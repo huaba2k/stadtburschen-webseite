@@ -1,5 +1,3 @@
-// schema/index.ts
-
 // 1. Der Galerie-Block
 const gallery = {
   name: 'gallery',
@@ -16,7 +14,7 @@ const gallery = {
   ]
 };
 
-// 2. Der Download-Block (PDFs etc.)
+// 2. Der Download-Block
 const downloads = {
   name: 'downloads',
   title: 'Datei Downloads',
@@ -39,18 +37,18 @@ const downloads = {
   ]
 };
 
-// 3. Normaler Text-Block (mit Editor)
+// 3. Normaler Text-Block
 const textBlock = {
   name: 'textSection',
   title: 'Textbereich',
   type: 'object',
   fields: [
     { name: 'heading', type: 'string', title: 'Überschrift' },
-    { name: 'content', type: 'array', title: 'Inhalt', of: [{ type: 'block' }] } // Rich Text
+    { name: 'content', type: 'array', title: 'Inhalt', of: [{ type: 'block' }] }
   ]
 };
 
-// NEU: Der Tabellen-Block
+// 4. Der Tabellen-Block (NEU)
 const tableSection = {
   name: 'tableSection',
   title: 'Tabelle',
@@ -59,13 +57,13 @@ const tableSection = {
     { name: 'title', type: 'string', title: 'Überschrift (Optional)' },
     { 
       name: 'dataTable', 
-      type: 'table', 
+      type: 'table', // Dieser Typ existiert nur, wenn das Plugin geladen ist!
       title: 'Tabelle',
     }
   ]
 };
 
-// 4. Die Seite selbst (Der Container)
+// 5. Die Seite selbst (Der Container)
 const page = {
   name: 'page',
   title: 'Seiten',
@@ -81,11 +79,11 @@ const page = {
         { type: 'textSection' },
         { type: 'gallery' },
         { type: 'downloads' },
-        { type: 'tableSection' }, // <--- HIER NEU DAZU
+        { type: 'tableSection' }, // Hier fügen wir die Tabelle ein
       ]
     }
   ]
 };
 
-// Exportieren für die Config
-export const schemaTypes = [page, textBlock, gallery, downloads];
+// WICHTIG: Hier exportieren wir alles als Liste
+export const schemaTypes = [page, textBlock, gallery, downloads, tableSection];
