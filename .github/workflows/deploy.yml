@@ -1,27 +1,4 @@
-name: Deploy to Manitu
-
-on:
-  push:
-    branches: [ master ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Install Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        
-    - name: Install Dependencies
-      run: npm install
-      
-    - name: Build Project
-      run: npm run build
-      
-    - name: FTP Deploy to Manitu
+- name: FTP Deploy to Manitu
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: ${{ secrets.FTP_SERVER }}
@@ -29,8 +6,8 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./dist/
         server-dir: /web/new.stadtburschen.de/
-        protocol: ftps
-        security: loose
+        protocol: ftp              # HIER: ftp statt ftps
+        port: 21                   # HIER: Port explizit setzen
         exclude: |
           **/.git*
           **/.github*
