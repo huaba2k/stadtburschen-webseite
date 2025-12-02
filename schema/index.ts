@@ -50,6 +50,21 @@ const textBlock = {
   ]
 };
 
+// NEU: Der Tabellen-Block
+const tableSection = {
+  name: 'tableSection',
+  title: 'Tabelle',
+  type: 'object',
+  fields: [
+    { name: 'title', type: 'string', title: 'Überschrift (Optional)' },
+    { 
+      name: 'dataTable', 
+      type: 'table', 
+      title: 'Tabelle',
+    }
+  ]
+};
+
 // 4. Die Seite selbst (Der Container)
 const page = {
   name: 'page',
@@ -66,7 +81,7 @@ const page = {
         { type: 'textSection' },
         { type: 'gallery' },
         { type: 'downloads' },
-        // Hier können wir später noch 'Tabelle', 'Video' etc. hinzufügen
+        { type: 'tableSection' }, // <--- HIER NEU DAZU
       ]
     }
   ]
