@@ -2,22 +2,17 @@ import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { schemaTypes } from './schema/index';
 
-// Deine IDs (die hast du ja jetzt)
-const projectId = 'DEINE_PROJECT_ID'; 
+// PRÜFE DIESE ZEILE GENAU:
+const projectId = '5wk79lvj'; // Nur a-z und 0-9. Kein "_" und kein "A-Z"
 const dataset = 'production';
 
 export default defineConfig({
   name: 'stadtburschen',
   title: 'Stadtburschen Admin',
-  
   projectId,
   dataset,
-  
-  // WICHTIG: Das hier hat gefehlt!
-  basePath: '/admin',
-
+  basePath: '/admin', // Das muss auch noch drin sein
   plugins: [structureTool()],
-
   schema: {
     types: schemaTypes,
   },
