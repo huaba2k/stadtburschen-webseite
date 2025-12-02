@@ -1,18 +1,22 @@
 ---
 import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 
 interface Props {
 	title: string;
 }
 
 const { title } = Astro.props;
+
+// Das Hintergrundbild zentral definiert
+const bgImage = "/hero.jpg"; 
 ---
 
 <!doctype html>
-<html lang="de" class="scroll-smooth">
+<html lang="de" class="scroll-smooth h-full">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Stadtburschen Freising - Tradition trifft Zukunft" />
+		<meta name="description" content="Stadtburschen Freising" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
@@ -33,23 +37,24 @@ const { title } = Astro.props;
 				}
 				return 'light';
 			})();
-		
-			if (theme === 'dark') {
-				document.documentElement.classList.add('dark');
-			} else {
-				document.documentElement.classList.remove('dark');
-			}
+			if (theme === 'dark') document.documentElement.classList.add('dark');
 		</script>
 	</head>
 	
-	<body class="bg-white text-gray-900 dark:bg-burschen-DEFAULT dark:text-gray-100 font-sans antialiased transition-colors duration-300 pb-16">
+	<body class="flex flex-col min-h-screen font-sans antialiased transition-colors duration-300 relative">
+
+		<div class="fixed inset-0 z-[-1]">
+			<img src={bgImage} alt="" class="w-full h-full object-cover" />
+			<div class="absolute inset-0 bg-white/90 dark:bg-burschen-DEFAULT/90 transition-colors duration-300"></div>
+		</div>
 		
 		<Header />
 		
-		<slot />
+		<main class="flex-grow pt-24 pb-12">
+			<slot />
+		</main>
+
+		<Footer />
 		
-		<footer class="py-8 text-center text-sm text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-white/10 mt-20">
-			&copy; {new Date().getFullYear()} Stadtburschen Freising. <a href="/impressum" class="hover:text-burschen-blau dark:hover:text-burschen-gold">Impressum</a>
-		</footer>
 	</body>
 </html>

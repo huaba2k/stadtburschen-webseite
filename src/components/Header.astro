@@ -7,72 +7,82 @@ const navItems = [
 ];
 ---
 
-<header class="fixed w-full z-50 transition-all duration-300 bg-white/90 dark:bg-burschen-grau/90 backdrop-blur-md border-b border-gray-200 dark:border-white/10">
-  <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+<header class="fixed top-0 w-full z-50 transition-all duration-300 bg-white/95 dark:bg-burschen-DEFAULT/95 backdrop-blur-md border-b border-gray-200 dark:border-white/10 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
     
-    <a href="/" class="text-xl font-serif font-bold tracking-wider text-burschen-blau dark:text-burschen-gold z-50 relative">
+    <a href="/" class="text-xl font-serif font-bold tracking-wider text-burschen-blau dark:text-burschen-gold z-50">
       STADTBURSCHEN
     </a>
 
-    <nav class="hidden md:flex gap-8 items-center">
-      {navItems.map(item => (
-        <a href={item.href} class="text-sm font-semibold uppercase tracking-widest text-gray-600 hover:text-burschen-blau dark:text-gray-300 dark:hover:text-white transition-colors">
-          {item.name}
-        </a>
-      ))}
+    <div class="flex items-center gap-4 md:gap-8">
+      
+      <nav class="hidden md:flex gap-6 items-center">
+        {navItems.map(item => (
+          <a href={item.href} class="text-sm font-bold uppercase tracking-widest text-gray-600 hover:text-burschen-blau dark:text-gray-300 dark:hover:text-white transition-colors">
+            {item.name}
+          </a>
+        ))}
+      </nav>
 
-      <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
-        <span class="hidden dark:inline">☀️</span>
-        <span class="dark:hidden">🌙</span>
+      <button id="theme-toggle" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 transition-colors z-50 text-burschen-blau dark:text-burschen-gold">
+        <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
       </button>
-    </nav>
 
-    <button id="menu-btn" class="md:hidden z-50 p-2 text-burschen-blau dark:text-white focus:outline-none">
-      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-         <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-      </svg>
-    </button>
+      <button id="menu-btn" class="md:hidden z-50 p-1 text-burschen-blau dark:text-white focus:outline-none">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+
+    </div>
   </div>
 
-  <div id="mobile-menu" class="fixed inset-0 bg-white dark:bg-burschen-DEFAULT z-40 flex flex-col items-center justify-center space-y-8 transition-transform duration-300 translate-x-full md:hidden">
+  <div id="mobile-menu" class="fixed inset-0 z-40 bg-white dark:bg-burschen-DEFAULT flex flex-col items-center justify-center space-y-8 transition-transform duration-300 translate-x-full md:hidden">
     {navItems.map(item => (
-      <a href={item.href} class="text-2xl font-serif font-bold text-gray-800 dark:text-white hover:text-burschen-blau dark:hover:text-burschen-gold">
+      <a href={item.href} class="text-3xl font-serif font-bold text-gray-900 dark:text-white hover:text-burschen-blau dark:hover:text-burschen-gold transition-colors">
         {item.name}
       </a>
     ))}
-    
-    <button id="theme-toggle-mobile" class="mt-8 p-4 rounded-full bg-gray-100 dark:bg-white/10 text-2xl">
-      <span class="hidden dark:inline">☀️ Tagmodus</span>
-      <span class="dark:hidden">🌙 Nachtmodus</span>
-    </button>
   </div>
 </header>
 
 <script>
-  // 1. Dark Mode Logic (für beide Buttons)
+  // Dark Mode
   const toggleTheme = () => {
     const element = document.documentElement;
     element.classList.toggle("dark");
     localStorage.setItem("theme", element.classList.contains("dark") ? "dark" : "light");
   };
-
   document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
-  document.getElementById('theme-toggle-mobile')?.addEventListener('click', toggleTheme);
 
-  // 2. Mobile Menu Logic
+  // Mobile Menu
   const menuBtn = document.getElementById('menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
   const menuIcon = document.getElementById('menu-icon');
+  const menuLinks = mobileMenu?.querySelectorAll('a');
 
+  // Menü öffnen/schließen
   menuBtn?.addEventListener('click', () => {
-    // Menü rein/raus schieben
     mobileMenu?.classList.toggle('translate-x-full');
     
-    // Icon ändern (von 3 Strichen zu X)
+    // Icon wechseln
     if (mobileMenu?.classList.contains('translate-x-full')) {
-       menuIcon?.setAttribute('d', 'M4 6h16M4 12h16M4 18h16'); // Hamburger
+       menuIcon?.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
     } else {
-       menuIcon?.setAttribute('d', 'M6 18L18 6M6 6l12 12'); // X-Kreuz
+       menuIcon?.setAttribute('d', 'M6 18L18 6M6 6l12 12');
     }
+  });
+
+  // Menü schließen, wenn man auf einen Link klickt
+  menuLinks?.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu?.classList.add('translate-x-full');
+      menuIcon?.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+    });
   });
 </script>

@@ -2,13 +2,15 @@
 const year = new Date().getFullYear();
 ---
 
-<footer class="fixed bottom-0 w-full z-40 h-12 flex items-center justify-center bg-white/90 dark:bg-burschen-grau/90 backdrop-blur-md border-t border-gray-200 dark:border-white/10 text-xs md:text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
+<footer class="w-full h-16 flex items-center justify-center bg-white/50 dark:bg-burschen-DEFAULT/50 backdrop-blur-sm border-t border-gray-200 dark:border-white/10 text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-auto">
   
-  <div class="flex gap-4 md:gap-8">
+  <div class="flex flex-col md:flex-row gap-2 md:gap-8 items-center">
     <span>&copy; {year} Stadtburschen Freising</span>
     <span class="hidden md:inline">|</span>
-    <a href="/impressum" class="hover:text-burschen-blau dark:hover:text-burschen-gold transition-colors">Impressum</a>
-    <a href="/datenschutz" class="hover:text-burschen-blau dark:hover:text-burschen-gold transition-colors">Datenschutz</a>
+    <div class="flex gap-4">
+      <a href="/impressum" class="hover:text-burschen-blau dark:hover:text-burschen-gold transition-colors">Impressum</a>
+      <a href="/datenschutz" class="hover:text-burschen-blau dark:hover:text-burschen-gold transition-colors">Datenschutz</a>
+    </div>
   </div>
 
 </footer>
