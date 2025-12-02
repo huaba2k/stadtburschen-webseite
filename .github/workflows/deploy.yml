@@ -29,8 +29,8 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./dist/
         server-dir: /web/new.stadtburschen.de/
-        protocol: ftps             # WICHTIG: Erzwingt Verschlüsselung (mag Manitu)
-        security: loose            # WICHTIG: Toleranter bei Zertifikaten, verhindert den Abbruch
+        protocol: ftps
+        security: loose
         exclude: |
           **/.git*
           **/.github*
