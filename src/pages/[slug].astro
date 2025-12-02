@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { PortableText } from '@portabletext/react';
+
+// 1. DIESE FUNKTION LÄUFT BEIM BAUEN (BUILD TIME)
+// Sie fragt Sanity: "Welche Seiten hast du?" und erstellt für jede eine Route.
+export async function getStaticPaths() {
+  // Wir importieren den Client hier direkt, um Probleme zu vermeiden
+  const { sanityClient } = await import('sanity:client');
+  
+  // Wir holen ALLE Seiten mit ihrem Inhalt (Titel, Slug, PageBuilder)
+  const pages = await sanityClient.fetch(`*[_type == "page" && defined(slug.current)]`);
+
+  // Wir geben Astro die Liste zurück
+  return pages.map((page) => ({
+    params: { slug: page.slug.current }, // Die URL (z.B. /meine-erste-testseite)
+    props: { page }, // Die Daten der Seite
+  }));
+}
+
+// 2. HIER KOMMEN DIE DATEN AN
+interface Props {
+  page: any;
+}
+
+const { page } = Astro.props;
+---
+
+<Layout title={page.title}>
+  <div class="pt-32 pb-20 max-w-4xl mx-auto px-4">
+    
+    <h1 class="text-4xl md:text-6xl font-serif font-bold text-burschen-blau dark:text-burschen-gold mb-12 text-center">
+      {page.title}
+    </h1>
+
+    <div class="space-y-16">
+      {page.pageBuilder && page.pageBuilder.map((block) => {
+        
+        // A. WENN ES EIN TEXT-BLOCK IST
+        if (block._type === 'textSection') {
+          return (
+            <div class="prose prose-lg dark:prose-invert max-w-none">
+              <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">{block.heading}</h2>
+              <PortableText value={block.content} />
+            </div>
+          );
+        }
+
+        // B. WENN ES EINE GALERIE IST
+        if (block._type === 'gallery') {
+          return (
+            <div>
+              {block.headline && <h3 class="text-2xl font-bold mb-6 text-center">{block.headline}</h3>}
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                 {/* Hinweis: Wir müssen Bilder später noch optimieren, für den ersten Test reicht das */}
+                 {block.images && block.images.map((img) => (
+                   <div class="aspect-square bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden">
+                     {/* Hinweis: In Sanity sind Bilder Referenzen, wir bräuchten hier noch einen URL-Builder. 
+                         Zum Testen lassen wir es kurz leer oder zeigen Platzhalter. */}
+                      <span class="flex items-center justify-center h-full text-xs text-gray-500">Bild</span>
+                   </div>
+                 ))}
+              </div>
+            </div>
+          );
+        }
+
+        // C. WENN ES DOWNLOADS SIND
+        if (block._type === 'downloads') {
+          return (
+            <div class="bg-gray-50 dark:bg-white/5 p-8 rounded-lg border border-gray-200 dark:border-gray-700">
+              <h3 class="text-xl font-bold mb-4">{block.title}</h3>
+              <ul class="space-y-2">
+                {block.files && block.files.map((file) => (
+                  <li class="flex items-center gap-2">
+                    📄 <span class="text-burschen-blau dark:text-burschen-gold">Datei Download (Pfad folgt)</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        }
+
+        return null;
+      })}
+    </div>
+
+  </div>
+</Layout>
