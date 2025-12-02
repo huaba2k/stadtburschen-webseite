@@ -1,13 +1,15 @@
+# WICHTIG: Diese Option ist bei Manitu oft Pflicht für Rewrite-Regeln
+Options +FollowSymLinks
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # 1. Regel: Alles im Admin-Bereich auf die Admin-HTML leiten
-  RewriteRule ^admin/.*$ /admin/index.html [L]
-
-  # 2. Regel: Für den Rest der Seite (SPA Fallback, falls nötig)
-  RewriteRule ^index\.html$ - [L]
+  # Regel: Wenn jemand /admin/irgendwas aufruft...
+  RewriteCond %{REQUEST_URI} ^/admin/
+  # ...und es keine echte Datei ist (wie ein Bild)...
   RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  # ...dann lade die Admin-Startseite (React App)
+  RewriteRule ^.*$ /admin/index.html [L]
+
 </IfModule>
