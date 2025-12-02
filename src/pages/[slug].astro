@@ -1,20 +1,33 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { PortableText } from '@portabletext/react';
-import { urlFor } from '../utils/sanity';
+
+// WICHTIG: Kein Import von '../utils/sanity' mehr nötig!
 
 export async function getStaticPaths() {
   const { sanityClient } = await import('sanity:client');
   
-  // DAS IST DIE MAGIE (GROQ QUERY):
-  // Wir sagen: Hol die Seiten. Aber beim pageBuilder...
-  // ... wenn es 'downloads' sind, geh in das Feld 'files'.
-  // ... nimm dort das Asset, folge dem Pfeil (->) und hol die echte URL und den Dateinamen.
+  // DIE NEUE ABFRAGE:
+  // Wir holen uns die URL ("url": asset->url) direkt aus der Datenbank.
   const query = `*[_type == "page" && defined(slug.current)] {
     title,
     slug,
     pageBuilder[]{
       ...,
+      
+      _type == "textSection" => {
+        heading,
+        content
+      },
+
+      _type == "gallery" => {
+        headline,
+        images[]{
+          "url": asset->url, 
+          "alt": asset->originalFilename
+        }
+      },
+
       _type == "downloads" => {
         title,
         files[]{
@@ -22,6 +35,11 @@ export async function getStaticPaths() {
           "url": asset->url,
           "fileName": asset->originalFilename
         }
+      },
+
+      _type == "tableSection" => {
+        title,
+        dataTable
       }
     }
   }`;
@@ -54,8 +72,6 @@ const { page } = Astro.props;
         // A. TEXT BLOCK
         if (block._type === 'textSection') {
           return (
-            // prose-invert sorgt eigentlich für den Dark Mode. 
-            // Zur Sicherheit erzwingen wir dark:text-gray-200 für alle direkten Texte.
             <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200">
               {block.heading && <h2 class="text-2xl font-bold mb-4 text-burschen-blau dark:text-white">{block.heading}</h2>}
               <PortableText value={block.content} />
@@ -72,13 +88,20 @@ const { page } = Astro.props;
               <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                  {block.images && block.images.map((img: any) => (
                    <div class="relative group aspect-square bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all">
-                      {/* Hier nutzen wir urlFor() um aus der ID ein echtes Bild zu machen */}
-                      <img 
-                        src={urlFor(img).width(600).height(600).url()} 
-                        alt={block.headline || "Galeriebild"}
-                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        loading="lazy"
-                      />
+                      {/* TRICK: Wir nutzen die URL direkt und hängen Parameter an.
+                          ?w=600  -> Breite 600px
+                          ?h=600  -> Höhe 600px
+                          ?fit=crop -> Zuschneiden
+                          ?q=80   -> Qualität 80% (spart Daten)
+                      */}
+                      {img.url && (
+                        <img 
+                          src={`${img.url}?w=600&h=600&fit=crop&q=80`} 
+                          alt={img.alt || "Galeriebild"}
+                          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                      )}
                    </div>
                  ))}
               </div>
@@ -98,7 +121,7 @@ const { page } = Astro.props;
                 {block.files && block.files.map((file: any) => (
                   <li>
                     <a 
-                      href={file.url} 
+                      href={file.url ? `${file.url}?dl=` : '#'} 
                       download 
                       target="_blank"
                       class="flex items-center gap-3 p-3 rounded-lg bg-white dark:bg-black/20 hover:bg-burschen-blau hover:text-white dark:hover:bg-burschen-gold dark:hover:text-black transition-all group border border-gray-100 dark:border-white/5"
@@ -110,7 +133,6 @@ const { page } = Astro.props;
                         </span>
                         <span class="text-xs opacity-60">Hier klicken zum Herunterladen</span>
                       </div>
-                      
                       <svg class="w-5 h-5 ml-auto opacity-50 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     </a>
                   </li>
@@ -125,14 +147,11 @@ const { page } = Astro.props;
           return (
             <div class="my-12">
               {block.title && <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">{block.title}</h3>}
-              
               <div class="overflow-x-auto rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                 <table class="w-full text-left text-sm md:text-base">
                   <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                     {block.dataTable && block.dataTable.rows && block.dataTable.rows.map((row: any, rowIndex: number) => {
-                      // Ist es die erste Zeile? Dann Kopfzeile (Dunkelblau/Gold)
                       const isHeader = rowIndex === 0;
-                      
                       return (
                         <tr class={isHeader 
                           ? "bg-burschen-blau text-white dark:bg-black dark:text-burschen-gold font-bold" 
@@ -156,6 +175,5 @@ const { page } = Astro.props;
         return null;
       })}
     </div>
-
   </div>
 </Layout>
