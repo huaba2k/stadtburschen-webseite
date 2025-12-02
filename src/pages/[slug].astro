@@ -1,24 +1,39 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { PortableText } from '@portabletext/react';
+import { urlFor } from '../utils/sanity';
 
-// 1. DIESE FUNKTION LÄUFT BEIM BAUEN (BUILD TIME)
-// Sie fragt Sanity: "Welche Seiten hast du?" und erstellt für jede eine Route.
 export async function getStaticPaths() {
-  // Wir importieren den Client hier direkt, um Probleme zu vermeiden
   const { sanityClient } = await import('sanity:client');
   
-  // Wir holen ALLE Seiten mit ihrem Inhalt (Titel, Slug, PageBuilder)
-  const pages = await sanityClient.fetch(`*[_type == "page" && defined(slug.current)]`);
+  // DAS IST DIE MAGIE (GROQ QUERY):
+  // Wir sagen: Hol die Seiten. Aber beim pageBuilder...
+  // ... wenn es 'downloads' sind, geh in das Feld 'files'.
+  // ... nimm dort das Asset, folge dem Pfeil (->) und hol die echte URL und den Dateinamen.
+  const query = `*[_type == "page" && defined(slug.current)] {
+    title,
+    slug,
+    pageBuilder[]{
+      ...,
+      _type == "downloads" => {
+        title,
+        files[]{
+          description,
+          "url": asset->url,
+          "fileName": asset->originalFilename
+        }
+      }
+    }
+  }`;
 
-  // Wir geben Astro die Liste zurück
-  return pages.map((page) => ({
-    params: { slug: page.slug.current }, // Die URL (z.B. /meine-erste-testseite)
-    props: { page }, // Die Daten der Seite
+  const pages = await sanityClient.fetch(query);
+
+  return pages.map((page: any) => ({
+    params: { slug: page.slug.current },
+    props: { page },
   }));
 }
 
-// 2. HIER KOMMEN DIE DATEN AN
 interface Props {
   page: any;
 }
@@ -27,37 +42,43 @@ const { page } = Astro.props;
 ---
 
 <Layout title={page.title}>
-  <div class="pt-32 pb-20 max-w-4xl mx-auto px-4">
+  <div class="pt-32 pb-20 max-w-4xl mx-auto px-4 min-h-[60vh]">
     
     <h1 class="text-4xl md:text-6xl font-serif font-bold text-burschen-blau dark:text-burschen-gold mb-12 text-center">
       {page.title}
     </h1>
 
     <div class="space-y-16">
-      {page.pageBuilder && page.pageBuilder.map((block) => {
+      {page.pageBuilder && page.pageBuilder.map((block: any) => {
         
-        // A. WENN ES EIN TEXT-BLOCK IST
+        // A. TEXT BLOCK
         if (block._type === 'textSection') {
           return (
-            <div class="prose prose-lg dark:prose-invert max-w-none">
-              <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">{block.heading}</h2>
+            // prose-invert sorgt eigentlich für den Dark Mode. 
+            // Zur Sicherheit erzwingen wir dark:text-gray-200 für alle direkten Texte.
+            <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200">
+              {block.heading && <h2 class="text-2xl font-bold mb-4 text-burschen-blau dark:text-white">{block.heading}</h2>}
               <PortableText value={block.content} />
             </div>
           );
         }
 
-        // B. WENN ES EINE GALERIE IST
+        // B. BILDER GALERIE
         if (block._type === 'gallery') {
           return (
             <div>
-              {block.headline && <h3 class="text-2xl font-bold mb-6 text-center">{block.headline}</h3>}
+              {block.headline && <h3 class="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">{block.headline}</h3>}
+              
               <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                 {/* Hinweis: Wir müssen Bilder später noch optimieren, für den ersten Test reicht das */}
-                 {block.images && block.images.map((img) => (
-                   <div class="aspect-square bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden">
-                     {/* Hinweis: In Sanity sind Bilder Referenzen, wir bräuchten hier noch einen URL-Builder. 
-                         Zum Testen lassen wir es kurz leer oder zeigen Platzhalter. */}
-                      <span class="flex items-center justify-center h-full text-xs text-gray-500">Bild</span>
+                 {block.images && block.images.map((img: any) => (
+                   <div class="relative group aspect-square bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all">
+                      {/* Hier nutzen wir urlFor() um aus der ID ein echtes Bild zu machen */}
+                      <img 
+                        src={urlFor(img).width(600).height(600).url()} 
+                        alt={block.headline || "Galeriebild"}
+                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        loading="lazy"
+                      />
                    </div>
                  ))}
               </div>
@@ -65,15 +86,33 @@ const { page } = Astro.props;
           );
         }
 
-        // C. WENN ES DOWNLOADS SIND
+        // C. DATEI DOWNLOADS
         if (block._type === 'downloads') {
           return (
-            <div class="bg-gray-50 dark:bg-white/5 p-8 rounded-lg border border-gray-200 dark:border-gray-700">
-              <h3 class="text-xl font-bold mb-4">{block.title}</h3>
-              <ul class="space-y-2">
-                {block.files && block.files.map((file) => (
-                  <li class="flex items-center gap-2">
-                    📄 <span class="text-burschen-blau dark:text-burschen-gold">Datei Download (Pfad folgt)</span>
+            <div class="bg-gray-50 dark:bg-white/5 p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
+              <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
+                📂 {block.title || "Downloads"}
+              </h3>
+              
+              <ul class="space-y-3">
+                {block.files && block.files.map((file: any) => (
+                  <li>
+                    <a 
+                      href={file.url} 
+                      download 
+                      target="_blank"
+                      class="flex items-center gap-3 p-3 rounded-lg bg-white dark:bg-black/20 hover:bg-burschen-blau hover:text-white dark:hover:bg-burschen-gold dark:hover:text-black transition-all group border border-gray-100 dark:border-white/5"
+                    >
+                      <span class="text-2xl group-hover:scale-110 transition-transform">📄</span>
+                      <div class="flex flex-col">
+                        <span class="font-semibold text-sm md:text-base">
+                          {file.description || file.fileName || "Download"}
+                        </span>
+                        <span class="text-xs opacity-60">Hier klicken zum Herunterladen</span>
+                      </div>
+                      
+                      <svg class="w-5 h-5 ml-auto opacity-50 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    </a>
                   </li>
                 ))}
               </ul>
