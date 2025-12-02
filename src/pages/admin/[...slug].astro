@@ -1,0 +1,23 @@
+---
+export const prerender = false; // Wichtig: Admin wird live gerendert, nicht statisch
+---
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stadtburschen Admin</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      import { renderStudio } from 'sanity';
+      import config from '../../../sanity.config'; // Pfad anpassen falls nötig
+
+      renderStudio(document.getElementById('app'), config);
+    </script>
+    <style>
+      html, body, #app { height: 100%; margin: 0; }
+    </style>
+  </body>
+</html>
