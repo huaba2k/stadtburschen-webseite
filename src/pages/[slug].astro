@@ -112,7 +112,7 @@ const { page } = Astro.props;
         // C. DATEI DOWNLOADS
         if (block._type === 'downloads') {
           return (
-            <div class="bg-gray-50 dark:bg-white/5 p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
+            <div class="bg-gray-50 dark:bg-white/5 p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm transition-colors">
               <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
                 📂 {block.title || "Downloads"}
               </h3>
@@ -124,16 +124,18 @@ const { page } = Astro.props;
                       href={file.url ? `${file.url}?dl=` : '#'} 
                       download 
                       target="_blank"
-                      class="flex items-center gap-3 p-3 rounded-lg bg-white dark:bg-black/20 hover:bg-burschen-blau hover:text-white dark:hover:bg-burschen-gold dark:hover:text-black transition-all group border border-gray-100 dark:border-white/5"
+                      class="flex items-center gap-3 p-3 rounded-lg bg-white dark:bg-black/40 hover:bg-burschen-blau hover:text-white dark:hover:bg-burschen-gold dark:hover:text-black transition-all group border border-gray-100 dark:border-white/5"
                     >
                       <span class="text-2xl group-hover:scale-110 transition-transform">📄</span>
                       <div class="flex flex-col">
-                        <span class="font-semibold text-sm md:text-base">
+                        <span class="font-semibold text-sm md:text-base text-gray-900 dark:text-gray-200 group-hover:text-white dark:group-hover:text-black">
                           {file.description || file.fileName || "Download"}
                         </span>
-                        <span class="text-xs opacity-60">Hier klicken zum Herunterladen</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 group-hover:text-blue-100 dark:group-hover:text-black/70">
+                          Hier klicken zum Herunterladen
+                        </span>
                       </div>
-                      <svg class="w-5 h-5 ml-auto opacity-50 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                      <svg class="w-5 h-5 ml-auto text-gray-400 dark:text-gray-500 group-hover:text-white dark:group-hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     </a>
                   </li>
                 ))}
