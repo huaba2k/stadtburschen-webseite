@@ -24,15 +24,23 @@ jobs:
     - name: Build Project
       run: npm run build
       
-    - name: Deploy via LFTP (Firewall-Safe)
-      run: |
-        # 1. Wir installieren das Profi-Tool lftp
-        sudo apt-get update
-        sudo apt-get install -y lftp
+    - name: SFTP Deploy to Manitu
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./dist/
+        server-dir: /web/new.stadtburschen.de/
         
-        # 2. Wir starten den Upload
-        # -u: Benutzer & Passwort
-        # set ftp:ssl-allow no: Wir nutzen normales FTP (stabiler bei Massen-Uploads)
-        # --parallel=1: WICHTIG! Nur 1 Datei gleichzeitig, damit Manitu nicht blockt
-        # mirror -R: Spiegle den lokalen Ordner auf den Server
-        lftp -c "set ftp:ssl-allow no; open -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_SERVER }}; mirror -R -v --parallel=1 ./dist /web/new.stadtburschen.de/"
+        # WICHTIG: SFTP aktivieren
+        protocol: sftp
+        port: 23
+        
+        # Das hier verhindert, dass er bei unbekannten Schlüsseln abbricht
+        security: loose
+        
+        exclude: |
+          **/.git*
+          **/.github*
+          **/node_modules/**
