@@ -8,7 +8,7 @@ interface Props {
 
 const { title } = Astro.props;
 
-// Das Hintergrundbild zentral definiert
+// Bild zentral definiert
 const bgImage = "/hero.jpg"; 
 ---
 
@@ -23,7 +23,7 @@ const bgImage = "/hero.jpg";
 		
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 		
 		<title>{title}</title>
 
@@ -45,7 +45,7 @@ const bgImage = "/hero.jpg";
 
 		<div class="fixed inset-0 z-[-1]">
 			<img src={bgImage} alt="" class="w-full h-full object-cover" />
-			<div class="absolute inset-0 bg-white/90 dark:bg-burschen-DEFAULT/90 transition-colors duration-300"></div>
+			<div class="absolute inset-0 bg-white/90 dark:bg-black/95 transition-colors duration-500"></div>
 		</div>
 		
 		<Header />

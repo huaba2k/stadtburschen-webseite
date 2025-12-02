@@ -7,10 +7,10 @@ const navItems = [
 ];
 ---
 
-<header class="fixed top-0 w-full z-50 transition-all duration-300 bg-white/95 dark:bg-burschen-DEFAULT/95 backdrop-blur-md border-b border-gray-200 dark:border-white/10 shadow-sm">
+<header class="fixed top-0 w-full z-50 transition-all duration-300 bg-white/95 dark:bg-[#050505]/95 backdrop-blur-md border-b border-gray-200 dark:border-white/5 shadow-sm">
   <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
     
-    <a href="/" class="text-xl font-serif font-bold tracking-wider text-burschen-blau dark:text-burschen-gold z-50">
+    <a href="/" class="text-xl font-serif font-bold tracking-wider text-burschen-blau dark:text-burschen-gold z-50 transition-colors">
       STADTBURSCHEN
     </a>
 
@@ -18,13 +18,13 @@ const navItems = [
       
       <nav class="hidden md:flex gap-6 items-center">
         {navItems.map(item => (
-          <a href={item.href} class="text-sm font-bold uppercase tracking-widest text-gray-600 hover:text-burschen-blau dark:text-gray-300 dark:hover:text-white transition-colors">
+          <a href={item.href} class="text-sm font-bold uppercase tracking-widest text-gray-600 hover:text-burschen-blau dark:text-gray-400 dark:hover:text-white transition-colors">
             {item.name}
           </a>
         ))}
       </nav>
 
-      <button id="theme-toggle" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 transition-colors z-50 text-burschen-blau dark:text-burschen-gold">
+      <button id="theme-toggle" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 transition-colors z-50 text-burschen-blau dark:text-burschen-gold">
         <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
@@ -42,17 +42,36 @@ const navItems = [
     </div>
   </div>
 
-  <div id="mobile-menu" class="fixed inset-0 z-40 bg-white dark:bg-burschen-DEFAULT flex flex-col items-center justify-center space-y-8 transition-transform duration-300 translate-x-full md:hidden">
-    {navItems.map(item => (
-      <a href={item.href} class="text-3xl font-serif font-bold text-gray-900 dark:text-white hover:text-burschen-blau dark:hover:text-burschen-gold transition-colors">
-        {item.name}
-      </a>
-    ))}
+  <div id="mobile-menu" class="fixed inset-0 z-40 bg-white dark:bg-zinc-950 flex flex-col pt-24 pb-10 px-6 transition-transform duration-300 translate-x-full md:hidden overflow-y-auto">
+    
+    <div class="flex flex-col w-full max-w-sm mx-auto space-y-0">
+      {navItems.map((item, index) => (
+        <a href={item.href} class={`
+            group flex items-center justify-between py-5 
+            text-xl font-medium tracking-wide
+            text-gray-800 dark:text-gray-200 
+            hover:text-burschen-blau dark:hover:text-burschen-gold
+            transition-all duration-200
+            border-b border-burschen-blau/10 dark:border-burschen-gold/20
+            ${index === 0 ? 'border-t' : ''} 
+        `}>
+          <span>{item.name}</span>
+          <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-burschen-blau dark:text-burschen-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      ))}
+    </div>
+
+    <div class="mt-auto text-center">
+      <p class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-widest">Stadtburschen Freising</p>
+    </div>
+
   </div>
 </header>
 
 <script>
-  // Dark Mode
+  // Dark Mode Logic
   const toggleTheme = () => {
     const element = document.documentElement;
     element.classList.toggle("dark");
@@ -60,29 +79,30 @@ const navItems = [
   };
   document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
 
-  // Mobile Menu
+  // Mobile Menu Logic
   const menuBtn = document.getElementById('menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
   const menuIcon = document.getElementById('menu-icon');
   const menuLinks = mobileMenu?.querySelectorAll('a');
 
-  // Menü öffnen/schließen
   menuBtn?.addEventListener('click', () => {
-    mobileMenu?.classList.toggle('translate-x-full');
+    const isOpen = mobileMenu?.classList.toggle('translate-x-full');
     
-    // Icon wechseln
-    if (mobileMenu?.classList.contains('translate-x-full')) {
-       menuIcon?.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+    // Icon wechseln und Body Scroll sperren (damit man nicht den Hintergrund scrollt)
+    if (isOpen) {
+       menuIcon?.setAttribute('d', 'M4 6h16M4 12h16M4 18h16'); // Hamburger
+       document.body.style.overflow = '';
     } else {
-       menuIcon?.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+       menuIcon?.setAttribute('d', 'M6 18L18 6M6 6l12 12'); // X
+       document.body.style.overflow = 'hidden';
     }
   });
 
-  // Menü schließen, wenn man auf einen Link klickt
   menuLinks?.forEach(link => {
     link.addEventListener('click', () => {
       mobileMenu?.classList.add('translate-x-full');
       menuIcon?.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+      document.body.style.overflow = '';
     });
   });
 </script>
