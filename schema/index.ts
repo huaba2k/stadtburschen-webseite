@@ -48,7 +48,7 @@ const textBlock = {
   ]
 };
 
-// 4. Der Tabellen-Block (NEU)
+// 4. Der Tabellen-Block
 const tableSection = {
   name: 'tableSection',
   title: 'Tabelle',
@@ -57,13 +57,48 @@ const tableSection = {
     { name: 'title', type: 'string', title: 'Überschrift (Optional)' },
     { 
       name: 'dataTable', 
-      type: 'table', // Dieser Typ existiert nur, wenn das Plugin geladen ist!
+      type: 'table', 
       title: 'Tabelle',
     }
   ]
 };
 
-// 5. Die Seite selbst (Der Container)
+// 5. NEU: Der Team-Block (Vorstandschaft)
+const teamSection = {
+  name: 'teamSection',
+  title: 'Vorstandschaft / Team',
+  type: 'object',
+  fields: [
+    { name: 'headline', type: 'string', title: 'Überschrift' },
+    {
+      name: 'members',
+      type: 'array',
+      title: 'Mitglieder',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'name', type: 'string', title: 'Name' },
+            { name: 'role', type: 'string', title: 'Amt / Funktion' },
+            { name: 'image', type: 'image', title: 'Foto', options: { hotspot: true } }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+// 6. NEU: Das Kontaktformular (Platzhalter)
+const formSection = {
+  name: 'formSection',
+  title: 'Kontaktformular einfügen',
+  type: 'object',
+  fields: [
+    { name: 'introText', type: 'string', title: 'Kurzer Text über dem Formular (Optional)' }
+  ]
+};
+
+// 7. Die Seite selbst
 const page = {
   name: 'page',
   title: 'Seiten',
@@ -79,11 +114,12 @@ const page = {
         { type: 'textSection' },
         { type: 'gallery' },
         { type: 'downloads' },
-        { type: 'tableSection' }, // Hier fügen wir die Tabelle ein
+        { type: 'tableSection' },
+        { type: 'teamSection' }, // NEU
+        { type: 'formSection' }, // NEU
       ]
     }
   ]
 };
 
-// WICHTIG: Hier exportieren wir alles als Liste
-export const schemaTypes = [page, textBlock, gallery, downloads, tableSection];
+export const schemaTypes = [page, textBlock, gallery, downloads, tableSection, teamSection, formSection];
