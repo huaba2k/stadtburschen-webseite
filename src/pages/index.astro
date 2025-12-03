@@ -36,7 +36,7 @@ const formatDate = (dateString: string) => {
 		<h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
 			Tradition.<br />
 			<span class="text-burschen-blau dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-burschen-blau dark:to-blue-400">
-				Freundschaft.
+				Gesellschaft.
 			</span>
 		</h1>
 
@@ -47,10 +47,10 @@ const formatDate = (dateString: string) => {
 
 		<div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
 			<a href="/termine" class="px-8 py-4 bg-burschen-gold text-burschen-DEFAULT font-bold rounded hover:bg-burschen-blau hover:text-white transition-colors duration-300 shadow-lg">
-				Nächster Stammtisch
+				Nächstes Treffen
 			</a>
 			<a href="/kontakt" class="px-8 py-4 border-2 border-burschen-blau text-burschen-blau dark:border-white/30 dark:text-white rounded hover:bg-burschen-blau hover:text-white dark:hover:bg-white/10 dark:hover:border-white transition-all duration-300">
-				Mitglied werden
+				Mitglied werden!
 			</a>
 		</div>
 
@@ -64,24 +64,37 @@ const formatDate = (dateString: string) => {
 			<!-- Spalte 1: Willkommenstext (Nimmt 2/3 der Breite) -->
 			<div class="lg:col-span-2 prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 mb-12 lg:mb-0">
 				
-				<h2>Herzlich willkommen bei den Stadtburschen Freising!</h2>
+				<h2>Servus und Herzlich Willkommen auf der Homepage des Stadtburschen-Verein Freising e. V.</h2>
+				<p></p>
 				<p class="lead">
-					Wir sind seit 1850 in Freising verwurzelt und leben die bayerische Tradition auf unsere ganz eigene Art: modern, offen und vor allem gesellig. Wir wollen keine Asche bewahren, sondern das Feuer weitergeben.
+					Schön, dass Sie den Weg auf unsere Homepage gefunden haben.
 				</p>
+				<p></p>
 				<p>
-					Früher als Krankenunterstützungsverein gegründet, steht heute das **Netzwerken** und der **Zusammenhalt** im Mittelpunkt. Egal ob du 20 oder 60 bist – bei uns findest du eine starke Gemeinschaft und immer einen guten Grund zum Feiern.
+					<b>Gegründet im Jahr 1850,</b> sind wir ein traditionsreicher Freisinger Verein, der die Geselligkeit und Kameradschaft pflegt.
 				</p>
-				<h3>Was wir dir bieten:</h3>
-				<ul>
-					<li>**Echte Gemeinschaft:** Abseits von Social Media.</li>
-					<li>**Vielfältige Events:** Vom traditionellen Jahrtag bis zum Kicker-Cup.</li>
-					<li>**Rückhalt:** Ein starkes Netzwerk in allen Lebenslagen.</li>
-				</ul>
+				<p></p>
 				<p>
-					Schau beim nächsten Stammtisch vorbei oder stöbere durch unsere aktuellen Meldungen!
+					Unsere Gemeinschaft ist ein Ort der Begegnung und des Miteinanders. Hier blühen Freundschaften und Erinnerungen werden geschaffen. Wir laden alle Interessierten und neuen Mitglieder ein, sich unseren Zielen anzuschließen und Teil dieser lebendigen Gemeinschaft zu werden.
 				</p>
-				<a href="/ueber-uns" class="inline-block mt-4 text-burschen-blau dark:text-burschen-gold font-bold hover:underline">Mehr über unsere Wurzeln erfahren &rarr;</a>
-
+				<p></p>
+				<p>
+					Gemeinsam ehren wir auch die verstorbenen Mitglieder, deren Geist und Erbe in unserem Verein weiterleben.
+				</p>
+				<p></p>
+				<p>
+					Treten Sie mit uns in Kontakt und freuen Sie sich auf gesellschaftliche Veranstaltungen, wie gemeinsame Ausflüge, Busreisen, Feiern wie Sommerfeste und Weihnachtsfeiern oder gemeinschaftliches Beisammensitzen mit informativen und anregenden Unterhaltungen.
+				</p>
+				<p></p>
+				<p>
+					Wir freuen uns, wenn der Verein seine lange Traditon weiter fortführen kann.
+				</p>
+				<p></p>
+				<p>
+					Ihr Stadtburschen-Verein Freising e. V.
+				</p>
+				<p></p>
+				<a href="/ueber-uns" class="inline-block mt-4 text-burschen-blau dark:text-burschen-gold font-bold hover:underline">Mehr erfahren &rarr;</a>
 			</div>
 			
 			<!-- Spalte 2: News und CTA (Nimmt 1/3 der Breite) -->
@@ -90,7 +103,7 @@ const formatDate = (dateString: string) => {
 				<!-- 1. Aktuelle News -->
 				<div class="bg-gray-50 dark:bg-[#111] p-6 rounded-xl shadow-md border border-gray-200 dark:border-white/5">
 					<h3 class="text-xl font-serif font-bold text-gray-900 dark:text-white mb-4">
-						Aktuelle Meldungen
+						Aktuelles
 					</h3>
 					
 					{latestPosts.length > 0 ? (
@@ -116,7 +129,7 @@ const formatDate = (dateString: string) => {
 					)}
 					
 					<a href="/news" class="mt-4 text-sm font-bold text-burschen-blau dark:text-burschen-gold hover:underline block">
-						Alle News &rarr;
+						Alle Neuigkeiten &rarr;
 					</a>
 				</div>
 
