@@ -110,6 +110,36 @@ const formatDate = (dateString: string) => {
           );
         }
 
+        if (block._type === 'tableSection') {
+          return (
+            <div class="w-full">
+              {block.title && <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">{block.title}</h3>}
+              <div class="overflow-x-auto rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                <table class="w-full text-left text-sm md:text-base">
+                  <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    {block.dataTable && block.dataTable.rows && block.dataTable.rows.map((row: any, rowIndex: number) => {
+                      // Die Logik, um die erste Zeile farbig zu machen
+                      const isHeader = rowIndex === 0;
+                      return (
+                        <tr class={isHeader 
+                          ? "bg-burschen-blau text-white dark:bg-black dark:text-burschen-gold font-bold" 
+                          : "bg-white dark:bg-[#111] text-gray-700 dark:text-gray-300 hover:bg-gray-500/5 transition-colors"
+                        }>
+                          {row.cells && row.cells.map((cell: string) => (
+                            <td class="p-4 border-r border-white/10 last:border-r-0">
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+        }
+
         // C. DATEI DOWNLOADS (Falls in News genutzt)
         if (block._type === 'downloads') {
           return (

@@ -155,8 +155,8 @@ const post = {
       of: [
         { type: 'textSection' },
         { type: 'gallery' },
-        { type: 'downloads' }
-        // Wir lassen hier Tabelle/Formular weg, da es selten in News gebraucht wird
+        { type: 'downloads' },
+        { type: 'tableSection' }
       ]
     }
   ]
