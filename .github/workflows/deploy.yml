@@ -24,7 +24,6 @@ jobs:
       run: npm run build
 
     - name: Deploy via LFTP (Password Safe)
-      # Hier laden wir die Secrets sicher in Variablen
       env:
         FTP_USER: ${{ secrets.FTP_USERNAME }}
         FTP_PASS: ${{ secrets.FTP_PASSWORD }}
@@ -33,10 +32,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y lftp
         
-        # Wir schreiben die Befehle in eine temporäre Datei, damit Sonderzeichen sicher sind
         echo "set ftp:ssl-allow no;" > upload_script.txt
         echo "open -u \"$FTP_USER\",\"$FTP_PASS\" $FTP_HOST;" >> upload_script.txt
-        echo "mirror -R -v --parallel=1 ./dist /web/new.stadtburschen.de/;" >> upload_script.txt
         
-        # lftp ausführen
+        # WICHTIG: Hier ist die Änderung! Wir haben '--no-perms' hinzugefügt.
+        echo "mirror -R -v --parallel=1 --no-perms ./dist /web/new.stadtburschen.de/;" >> upload_script.txt
+        
         lftp -f upload_script.txt
