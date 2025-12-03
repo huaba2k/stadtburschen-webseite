@@ -7,8 +7,8 @@ export default {
 			colors: {
 				burschen: {
 					DEFAULT: '#050505', // Fast Schwarz (angenehmer als #000)
-					blau: '#0053a0',
-					gold: '#c5a059',
+					blau: '#1717FE',
+					gold: '#eee001',
 					grau: '#1a1a1a',
 				}
 			},
