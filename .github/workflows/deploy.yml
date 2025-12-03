@@ -3,44 +3,35 @@ name: Deploy to Manitu
 on:
   push:
     branches: [ master ]
-  # DAS IST NEU: Erlaubt den Start von außen
   repository_dispatch:
     types: [sanity-update]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+    # 1. Code holen
     - uses: actions/checkout@v4
-    
+
+    # 2. Node.js installieren
     - name: Install Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        
+
+    # 3. Abhängigkeiten installieren
     - name: Install Dependencies
-      run: npm install
-      
+      run: npm ci
+
+    # 4. Seite bauen (HTML erstellen)
     - name: Build Project
       run: npm run build
-      
-    - name: SFTP Deploy to Manitu
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./dist/
-        server-dir: /web/new.stadtburschen.de/
-        
-        # WICHTIG: SFTP aktivieren
-        protocol: sftp
-        port: 23
-        
-        # Das hier verhindert, dass er bei unbekannten Schlüsseln abbricht
-        security: loose
-        
-        exclude: |
-          **/.git*
-          **/.github*
-          **/node_modules/**
+
+    # 5. UPLOAD (Manuell mit LFTP)
+    # Wir installieren lftp und laden die Dateien EINZELN hoch (--parallel=1)
+    # Das verhindert, dass die Manitu-Firewall blockiert.
+    - name: Deploy via LFTP
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y lftp
+        lftp -c "set ftp:ssl-allow no; open -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_SERVER }}; mirror -R -v --parallel=1 ./dist /web/new.stadtburschen.de/"
