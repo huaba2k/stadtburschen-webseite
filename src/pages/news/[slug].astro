@@ -1,0 +1,142 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { PortableText } from '@portabletext/react';
+// Import der Galerie-Komponente für interaktive Bilder in den News
+import Gallery from '../../components/react/Gallery.tsx'; 
+
+// WICHTIG: Definiert den Typ der Props, um VS Code ruhig zu stellen
+interface Props {
+  post: any;
+}
+
+export async function getStaticPaths() {
+  const { sanityClient } = await import('sanity:client');
+  
+  // Query: Holt alle News-Artikel und alle PageBuilder-Blöcke (Text, Galerie, Downloads)
+  const query = `*[_type == "post" && defined(slug.current)] {
+    title,
+    slug,
+    publishedAt,
+    "imageUrl": mainImage.asset->url,
+    pageBuilder[]{
+      ...,
+      _type == "textSection" => { heading, content },
+      _type == "gallery" => {
+        headline,
+        images[]{ "url": asset->url, "alt": asset->originalFilename }
+      },
+      _type == "downloads" => {
+        title,
+        files[]{ description, "url": asset->url, "fileName": asset->originalFilename }
+      }
+    }
+  }`;
+
+  const posts = await sanityClient.fetch(query);
+
+  return posts.map((post: any) => ({
+    params: { slug: post.slug.current },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+
+// Hilfsfunktion zur Formatierung des Datums
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('de-DE', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+---
+
+<Layout title={post.title}>
+  
+  {/* Header-Bild mit Titel und Datum */}
+  <div class="relative w-full h-[40vh] bg-gray-900 overflow-hidden mb-12">
+    {post.imageUrl && (
+        <img 
+            src={`${post.imageUrl}?w=1600&h=800&fit=crop&q=80`} 
+            alt={post.title} 
+            class="w-full h-full object-cover opacity-60" 
+            loading="eager"
+        />
+    )}
+    <div class="absolute inset-0 bg-black/50 flex items-end">
+        <div class="max-w-4xl mx-auto px-4 pb-8 w-full">
+            <p class="text-sm text-burschen-gold uppercase font-bold mb-2">
+                {formatDate(post.publishedAt)}
+            </p>
+            <h1 class="text-3xl md:text-5xl font-serif font-bold text-white leading-tight">
+                {post.title}
+            </h1>
+        </div>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-4 pb-20">
+    
+    {/* Zurück-Link zur News-Übersicht */}
+    <a href="/news" class="text-sm font-bold text-burschen-blau dark:text-burschen-gold hover:underline mb-8 block">
+        &larr; Zurück zur Übersicht
+    </a>
+
+    {/* Content-Blöcke (Der News-PageBuilder) */}
+    <div class="flex flex-col gap-12 md:gap-16">
+      {post.pageBuilder && post.pageBuilder.map((block: any) => {
+        
+        // A. TEXT BLOCK
+        if (block._type === 'textSection') {
+          return (
+            <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 mb-0">
+              {block.heading && <h2 class="text-2xl font-bold mb-4 text-burschen-blau dark:text-white">{block.heading}</h2>}
+              <PortableText value={block.content} />
+            </div>
+          );
+        }
+
+        // B. BILDER GALERIE
+        if (block._type === 'gallery') {
+          return (
+            <div class="w-full">
+               <Gallery 
+                 client:load 
+                 images={block.images} 
+                 headline={block.headline} 
+               />
+            </div>
+          );
+        }
+
+        // C. DATEI DOWNLOADS (Falls in News genutzt)
+        if (block._type === 'downloads') {
+          return (
+            <div class="bg-gray-50 dark:bg-white/5 p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm transition-colors">
+              <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
+                📂 {block.title || "Downloads"}
+              </h3>
+              <ul class="space-y-3">
+                {block.files && block.files.map((file: any) => (
+                  <li>
+                    <a href={file.url ? `${file.url}?dl=` : '#'} download target="_blank" class="flex items-center gap-3 p-3 rounded-lg bg-white dark:bg-black/40 hover:bg-burschen-blau hover:text-white dark:hover:bg-burschen-gold dark:hover:text-black transition-all group border border-gray-100 dark:border-white/5">
+                      <span class="text-2xl group-hover:scale-110 transition-transform">📄</span>
+                      <div class="flex flex-col">
+                        <span class="font-semibold text-sm md:text-base text-gray-900 dark:text-gray-200 group-hover:text-white dark:group-hover:text-black">{file.description || file.fileName || "Download"}</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 group-hover:text-blue-100 dark:group-hover:text-black/70">Hier klicken zum Herunterladen</span>
+                      </div>
+                      <svg class="w-5 h-5 ml-auto text-gray-400 dark:text-gray-500 group-hover:text-white dark:group-hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        }
+
+        return null;
+      })}
+    </div>
+  </div>
+</Layout>

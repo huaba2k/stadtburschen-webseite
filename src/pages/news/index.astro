@@ -1,0 +1,69 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// WICHTIG: Wir holen alle veröffentlichten News
+const { sanityClient } = await import('sanity:client');
+
+const posts = await sanityClient.fetch(`
+  *[_type == "post" && defined(slug.current)] | order(publishedAt desc) {
+    title,
+    slug,
+    publishedAt,
+    excerpt,
+    "imageUrl": mainImage.asset->url
+  }
+`);
+
+// Datumsformatierung
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('de-DE', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+---
+
+<Layout title="News & Berichte">
+  <div class="pt-32 pb-20 max-w-6xl mx-auto px-4 min-h-[60vh]">
+    <h1 class="text-4xl md:text-6xl font-serif font-bold text-burschen-blau dark:text-burschen-gold mb-16 text-center">
+      Aktuelle Berichte
+    </h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {posts.map((post: any) => (
+        <a href={`/news/${post.slug.current}`} class="block rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-white dark:bg-[#111] border border-gray-100 dark:border-white/5">
+          
+          {/* Bild */}
+          <div class="aspect-video bg-gray-200 dark:bg-gray-700">
+            {post.imageUrl && (
+              <img 
+                src={`${post.imageUrl}?w=600&h=300&fit=crop&q=80`} 
+                alt={post.title}
+                class="w-full h-full object-cover"
+              />
+            )}
+          </div>
+
+          {/* Text-Box */}
+          <div class="p-6">
+            <p class="text-xs text-burschen-blau dark:text-burschen-gold uppercase font-bold mb-2">
+              {formatDate(post.publishedAt)}
+            </p>
+            <h2 class="text-xl font-serif font-bold text-gray-900 dark:text-white mb-2 group-hover:text-burschen-blau dark:group-hover:text-burschen-gold transition-colors">
+              {post.title}
+            </h2>
+            <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">
+              {post.excerpt}
+            </p>
+          </div>
+          
+        </a>
+      ))}
+    </div>
+    
+    {posts.length === 0 && (
+      <p class="text-center text-gray-500 mt-20">Noch keine Artikel vorhanden. Zeit für den ersten Post!</p>
+    )}
+  </div>
+</Layout>

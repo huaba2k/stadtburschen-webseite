@@ -122,4 +122,45 @@ const page = {
   ]
 };
 
-export const schemaTypes = [page, textBlock, gallery, downloads, tableSection, teamSection, formSection];
+// NEU: Der News-Artikel (Post) Dokumententyp
+const post = {
+  name: 'post',
+  title: 'News Artikel',
+  type: 'document',
+  fields: [
+    { name: 'title', type: 'string', title: 'Titel des Artikels' },
+    { name: 'slug', type: 'slug', title: 'URL-Pfad', options: { source: 'title' } },
+    { 
+      name: 'publishedAt', 
+      type: 'datetime', 
+      title: 'Veröffentlichungsdatum',
+      options: { dateFormat: 'DD.MM.YYYY' }
+    },
+    { 
+      name: 'mainImage', 
+      type: 'image', 
+      title: 'Titelbild (wird auch im Teaser genutzt)',
+      options: { hotspot: true }
+    },
+    { 
+      name: 'excerpt', 
+      type: 'text', 
+      title: 'Vorschau-Text (max. 2 Zeilen)',
+      rows: 2 
+    },
+    { 
+      name: 'pageBuilder', // Wir nutzen den PageBuilder auch für den Inhalt der News
+      title: 'Inhalt (Baukasten)',
+      type: 'array',
+      of: [
+        { type: 'textSection' },
+        { type: 'gallery' },
+        { type: 'downloads' }
+        // Wir lassen hier Tabelle/Formular weg, da es selten in News gebraucht wird
+      ]
+    }
+  ]
+};
+
+
+export const schemaTypes = [page, post, textBlock, gallery, downloads, tableSection, teamSection, formSection];
