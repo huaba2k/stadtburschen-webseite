@@ -12,10 +12,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Node.js
+    # TURBO 1: Caching für Node.js aktivieren
+    # Das spart ca. 30-60 Sekunden bei der Installation
+    - name: Install Node.js with Cache
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+        cache: 'npm'
 
     - name: Install Dependencies
       run: npm ci
@@ -23,19 +26,28 @@ jobs:
     - name: Build Project
       run: npm run build
 
-    - name: Deploy via LFTP (Password Safe)
+    - name: Deploy via LFTP (Smart & Root)
       env:
         FTP_USER: ${{ secrets.FTP_USERNAME }}
         FTP_PASS: ${{ secrets.FTP_PASSWORD }}
         FTP_HOST: ${{ secrets.FTP_SERVER }}
       run: |
-        sudo apt-get update
-        sudo apt-get install -y lftp
+        # Installation (leider notwendig, geht aber schnell)
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq lftp
         
-        echo "set ftp:ssl-allow no;" > upload_script.txt
-        echo "open -u \"$FTP_USER\",\"$FTP_PASS\" $FTP_HOST;" >> upload_script.txt
+        # Skript erstellen
+        echo "set ftp:ssl-allow no;" > upload.txt
+        echo "open -u \"$FTP_USER\",\"$FTP_PASS\" $FTP_HOST;" >> upload.txt
         
-        # WICHTIG: Hier ist die Änderung! Wir haben '--no-perms' hinzugefügt.
-        echo "mirror -R -v --parallel=1 --no-perms ./dist /web/new.stadtburschen.de/;" >> upload_script.txt
+        # FIX 1 (Dist-Ordner): 'lcd dist' wechselt LOKAL in den Ordner
+        echo "lcd dist;" >> upload.txt
         
-        lftp -f upload_script.txt
+        # FIX 2 (Speed): '--only-newer' lädt nur geänderte Dateien hoch!
+        # '--parallel=2': Wir wagen vorsichtig 2 Verbindungen (meist okay bei Manitu)
+        # '--no-perms': Verhindert den chmod-Fehler
+        # '.' bedeutet: Lade den aktuellen lokalen Inhalt (aus dist) hoch
+        echo "mirror -R -v --parallel=2 --only-newer --no-perms . /web/new.stadtburschen.de/;" >> upload.txt
+        
+        # Feuer frei!
+        lftp -f upload.txt
