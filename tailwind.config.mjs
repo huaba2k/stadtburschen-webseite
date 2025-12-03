@@ -7,8 +7,8 @@ export default {
 			colors: {
 				burschen: {
 					DEFAULT: '#050505', // Fast Schwarz (angenehmer als #000)
-					blau: '#1717FE',
-					gold: '#eee001',
+					blau: '#0053a0', // Logofarbe: #1717fe
+					gold: '#c5a059', // Logofarbe: #eee001
 					grau: '#1a1a1a',
 				}
 			},
