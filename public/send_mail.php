@@ -24,13 +24,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email_content = "Name: $name\n";
     $email_content .= "Email: $email\n\n";
     $email_content .= "Nachricht:\n$message\n";
-    $headers = "From: Webseite <noreply@stadtburschen.de>\r\n";
+    $headers = "From: Homepage Stadtburschenverein Freising <noreply@stadtburschen.de>\r\n";
     $headers .= "Reply-To: $email\r\n";
 
     mail($to, $subject, $email_content, $headers);
 
     // 4. Schicke HTML-Bestätigung an den Nutzer
-    $userSubject = "Deine Nachricht an die Stadtburschen Freising";
+    $userSubject = "Deine Nachricht an den Stadtburschenverein Freising";
     
     // HTML Template (Royalblau & Gold)
     $htmlContent = '
@@ -38,12 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <body style="font-family: sans-serif; background-color: #f4f4f4; padding: 20px;">
         <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <div style="background-color: #0053a0; padding: 20px; text-align: center;">
-                <h1 style="color: #c5a059; margin: 0; font-size: 24px;">Stadtburschen Freising</h1>
+                <h1 style="color: #c5a059; margin: 0; font-size: 24px;">Stadtburschenverein Freising</h1>
             </div>
             <div style="padding: 30px; color: #333;">
                 <h2 style="color: #0053a0;">Servus ' . $name . ',</h2>
-                <p>Danke für deine Nachricht! Wir haben sie gut erhalten.</p>
-                <p>Ein Mitglied der Vorstandschaft wird sich in Kürze bei dir melden.</p>
+                <p>Vielen Dank für deine Nachricht! Wir haben sie erhalten und ein Mitglied der Vorstandschaft wird sich in Kürze bei dir melden.</p>
                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
                 <p style="font-size: 14px; color: #666;"><strong>Deine Nachricht:</strong><br>' . nl2br(htmlspecialchars($message)) . '</p>
             </div>
@@ -57,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $userHeaders = "MIME-Version: 1.0" . "\r\n";
     $userHeaders .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $userHeaders .= "From: Stadtburschen Freising <noreply@stadtburschen.de>" . "\r\n";
+    $userHeaders .= "From: Stadtburschenverein Freising <noreply@stadtburschen.de>" . "\r\n";
 
     mail($email, $userSubject, $htmlContent, $userHeaders);
 
