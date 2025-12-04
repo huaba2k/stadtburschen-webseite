@@ -1,53 +1,47 @@
-name: Build und Deploy der Astro Webseite
+name: Build und Deploy der Stadtburschen Webseite
 
 on:
-  # Löst den Workflow bei jedem Push auf dem 'main'-Branch aus
   push:
-    branches:
-      - main
-  # Ermöglicht manuelles Starten über die GitHub-Oberfläche
-  workflow_dispatch:
+    branches: [ master ]
+  repository_dispatch:
+    types: [sanity-update]
 
 jobs:
-  build_and_deploy:
-    # Führt den Job auf einem Ubuntu-Runner aus
+  build-and-deploy:
     runs-on: ubuntu-latest
     
-    # Der Node-Schritt bleibt gleich
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
+    - uses: actions/checkout@v4
+
+    # 1. Node Setup & Cache (Für Geschwindigkeit)
+    - name: Setup Node.js with Cache
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+        cache: 'npm'
 
-    # WICHTIG: Installation der Abhängigkeiten und Build
-    - name: Install dependencies and Build
+    # 2. Installation und Build
+    - name: Install Dependencies and Build
       run: |
-        npm install
+        npm ci
         npm run build
 
-    # WICHTIG: Deployment via LFTP
+    # 3. Deployment via LFTP (Optimiert & Robust)
     - name: Deploy via LFTP
-      # Setzt die FTP-Variablen als Umgebungsvariablen für diesen Schritt
+      # Secrets werden hier als Umgebungsvariablen für diesen Schritt bereitgestellt
       env:
         FTP_USER: ${{ secrets.FTP_USERNAME }}
         FTP_PASS: ${{ secrets.FTP_PASSWORD }}
         FTP_HOST: ${{ secrets.FTP_SERVER }}
       run: |
-        # 1. lftp installieren
+        # LFTP installieren
         sudo apt-get update
         sudo apt-get install -y lftp
         
-        # 2. Skript mit allen Befehlen erstellen
+        # Skript mit korrekter Pfad- und Sync-Logik erstellen
         echo "set ftp:ssl-allow no;" > upload_script.txt
         echo "open -u \"$FTP_USER\",\"$FTP_PASS\" $FTP_HOST;" >> upload_script.txt
+        echo "mirror -R -v --parallel=1 --no-perms --only-newer ./dist /web/stadtburschen.de/;" >> upload_script.txt
         
-        # Den korrekten Zielordner auf Manitu festlegen
-        # Wir verwenden hier den letzten (falschen) Wert, den Sie korrigiert haben:
-        echo "mirror -R -v --parallel=1 --no-perms ./dist /web/stadtburschen.de/;" >> upload_script.txt
-        
-        # 3. lftp ausführen
+        # Ausführen des Deployment
         lftp -f upload_script.txt
