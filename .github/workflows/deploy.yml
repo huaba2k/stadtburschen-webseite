@@ -26,28 +26,25 @@ jobs:
     - name: Build Project
       run: npm run build
 
-    - name: Deploy via LFTP (Smart & Root)
-      env:
-        FTP_USER: ${{ secrets.FTP_USERNAME }}
-        FTP_PASS: ${{ secrets.FTP_PASSWORD }}
-        FTP_HOST: ${{ secrets.FTP_SERVER }}
+    # 5. Deploy via LFTP (LÖST DAS WARNING)
+    - name: Deploy via LFTP (Final Fix for Linter)
+      # Wir entfernen die 'env:' Deklaration aus dem YAML-Schema, das die Warnungen auslöst.
+      
       run: |
-        # Installation (leider notwendig, geht aber schnell)
-        sudo apt-get update -qq
-        sudo apt-get install -y -qq lftp
+        # 1. Zuweisung der Secrets direkt in Shell-Variablen für diesen Schritt
+        # (Beachte die Verwendung von 'export' im Shell-Skript statt im YAML-ENV-Block)
         
-        # Skript erstellen
-        echo "set ftp:ssl-allow no;" > upload.txt
-        echo "open -u \"$FTP_USER\",\"$FTP_PASS\" $FTP_HOST;" >> upload.txt
+        # Wichtig: Wir nutzen die korrekte YAML-Syntax für die Werte
+        FTP_USER="${{ secrets.FTP_USERNAME }}"
+        FTP_PASS="${{ secrets.FTP_PASSWORD }}"
+        FTP_HOST="${{ secrets.FTP_SERVER }}"
+
+        sudo apt-get update
+        sudo apt-get install -y lftp
         
-        # FIX 1 (Dist-Ordner): 'lcd dist' wechselt LOKAL in den Ordner
-        echo "lcd dist;" >> upload.txt
+        # 2. LFTP-Skript wird ausgeführt
+        echo "set ftp:ssl-allow no;" > upload_script.txt
+        echo "open -u \"$FTP_USER\",\"$FTP_PASS\" $FTP_HOST;" >> upload_script.txt
+        echo "mirror -R -v --parallel=1 --no-perms ./dist /web/new.stadtburschen.de/;" >> upload_script.txt
         
-        # FIX 2 (Speed): '--only-newer' lädt nur geänderte Dateien hoch!
-        # '--parallel=2': Wir wagen vorsichtig 2 Verbindungen (meist okay bei Manitu)
-        # '--no-perms': Verhindert den chmod-Fehler
-        # '.' bedeutet: Lade den aktuellen lokalen Inhalt (aus dist) hoch
-        echo "mirror -R -v --parallel=2 --only-newer --no-perms . /web/stadtburschen.de/;" >> upload.txt
-        
-        # Feuer frei!
-        lftp -f upload.txt
+        lftp -f upload_script.txt
