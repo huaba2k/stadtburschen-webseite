@@ -1,50 +1,60 @@
-name: Deploy to Manitu
+name: Build und Deploy der Astro Webseite
 
 on:
+  # Löst den Workflow bei jedem Push auf dem 'main'-Branch aus
   push:
-    branches: [ master ]
-  repository_dispatch:
-    types: [sanity-update]
+    branches:
+      - main
+  # Ermöglicht manuelles Starten über die GitHub-Oberfläche
+  workflow_dispatch:
+
+# Definiert die Umgebungsvariablen für Sanity (wird in der Build-Phase verwendet)
+# DIESEN BLOCK AUSKOMMENTIEREN ODER LÖSCHEN:
+# env:
+#   SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+#   SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
+#   SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
 
 jobs:
-  build-and-deploy:
+  build_and_deploy:
+    # Führt den Job auf einem Ubuntu-Runner aus
     runs-on: ubuntu-latest
+    
+    # Der Node-Schritt bleibt gleich
     steps:
-    - uses: actions/checkout@v4
-
-    # TURBO 1: Caching für Node.js aktivieren
-    # Das spart ca. 30-60 Sekunden bei der Installation
-    - name: Install Node.js with Cache
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
 
-    - name: Install Dependencies
-      run: npm ci
-
-    - name: Build Project
-      run: npm run build
-
-    # 5. Deploy via LFTP (LÖST DAS WARNING)
-    - name: Deploy via LFTP (Final Fix for Linter)
-      # Wir entfernen die 'env:' Deklaration aus dem YAML-Schema, das die Warnungen auslöst.
-      
+    # WICHTIG: Installation der Abhängigkeiten und Build
+    - name: Install dependencies and Build
       run: |
-        # 1. Zuweisung der Secrets direkt in Shell-Variablen für diesen Schritt
-        # (Beachte die Verwendung von 'export' im Shell-Skript statt im YAML-ENV-Block)
-        
-        # Wichtig: Wir nutzen die korrekte YAML-Syntax für die Werte
-        FTP_USER="${{ secrets.FTP_USERNAME }}"
-        FTP_PASS="${{ secrets.FTP_PASSWORD }}"
-        FTP_HOST="${{ secrets.FTP_SERVER }}"
+        npm install
+        npm run build
 
+    # WICHTIG: Deployment via LFTP
+    - name: Deploy via LFTP
+      # Setzt die FTP-Variablen als Umgebungsvariablen für diesen Schritt
+      env:
+        FTP_USER: ${{ secrets.FTP_USERNAME }}
+        FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+        FTP_HOST: ${{ secrets.FTP_SERVER }}
+      run: |
+        # 1. lftp installieren
         sudo apt-get update
         sudo apt-get install -y lftp
         
-        # 2. LFTP-Skript wird ausgeführt
+        # 2. Skript mit allen Befehlen erstellen
         echo "set ftp:ssl-allow no;" > upload_script.txt
         echo "open -u \"$FTP_USER\",\"$FTP_PASS\" $FTP_HOST;" >> upload_script.txt
-        echo "mirror -R -v --parallel=1 --no-perms ./dist /web/new.stadtburschen.de/;" >> upload_script.txt
         
+        # Den korrekten Zielordner auf Manitu festlegen
+        # Wir verwenden hier den letzten (falschen) Wert, den Sie korrigiert haben:
+        echo "mirror -R -v --parallel=1 --no-perms ./dist /web/stadtburschen.de/;" >> upload_script.txt
+        
+        # 3. lftp ausführen
         lftp -f upload_script.txt
