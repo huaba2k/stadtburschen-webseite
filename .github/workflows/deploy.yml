@@ -47,7 +47,7 @@ jobs:
         # '--parallel=2': Wir wagen vorsichtig 2 Verbindungen (meist okay bei Manitu)
         # '--no-perms': Verhindert den chmod-Fehler
         # '.' bedeutet: Lade den aktuellen lokalen Inhalt (aus dist) hoch
-        echo "mirror -R -v --parallel=2 --only-newer --no-perms . /web/new.stadtburschen.de/;" >> upload.txt
+        echo "mirror -R -v --parallel=2 --only-newer --no-perms . /web/stadtburschen.de/;" >> upload.txt
         
         # Feuer frei!
         lftp -f upload.txt

@@ -4,7 +4,7 @@ import react from '@astrojs/react';
 import sanity from '@sanity/astro';
 
 export default defineConfig({
-  site: 'https://new.stadtburschen.de',
+  site: 'https://stadtburschen.de',
   integrations: [
     tailwind(),
     react(),

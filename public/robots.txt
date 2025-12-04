@@ -1,0 +1,6 @@
+# Erlaubt allen Suchmaschinen den Zugriff auf alle Inhalte
+User-agent: *
+Allow: /
+
+# Verweist auf die automatisch generierte Sitemap von Astro
+Sitemap: https://stadtburschen.de/sitemap-index.xml
