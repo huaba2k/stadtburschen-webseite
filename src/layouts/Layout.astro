@@ -38,6 +38,26 @@ const bgImage = "/hero.jpg";
 		<meta name="generator" content={Astro.generator} />
 		<link rel="stylesheet" href="/fonts/vollkorn.css" />
 
+		// Ausschnitt aus <head> in src/layouts/Layout.astro
+
+<script is:inline>
+  const html = document.documentElement;
+  const storedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  // 1. Prüfen, ob eine Einstellung im Speicher existiert
+  if (storedTheme) {
+    if (storedTheme === 'dark') {
+      html.classList.add('dark');
+    } else {
+      html.classList.remove('dark');
+    }
+  // 2. Falls keine Einstellung existiert, den System-Modus prüfen (Fallback)
+  } else if (prefersDark) {
+    html.classList.add('dark');
+  }
+</script>
+
 		</head>
 	
 	<body class="flex flex-col min-h-screen font-sans antialiased transition-colors duration-300 relative">
