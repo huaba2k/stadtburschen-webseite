@@ -1,86 +1,155 @@
 ---
 const navItems = [
-  { name: 'Start', href: '/' },
-  { name: 'Über uns', href: '/ueber-uns' },
-  { name: 'Vorstandschaft', href: '/vorstandschaft' },
-  { name: 'Aktuelles', href: '/news' }, // HIER NEU
-  { name: 'Termine', href: '/termine' },
-  { name: 'Kontakt', href: '/kontakt' },
+  { name: "Start", href: "/" },
+  { name: "Über uns", href: "/ueber-uns" },
+  { name: "Vorstandschaft", href: "/vorstandschaft" },
+  { name: "Aktuelles", href: "/news" }, // HIER NEU
+  { name: "Termine", href: "/termine" },
+  { name: "Kontakt", href: "/kontakt" },
 ];
 ---
 
-<header class="fixed top-0 w-full z-50 transition-all duration-300 bg-white/95 dark:bg-[#050505]/95 backdrop-blur-md border-b border-gray-200 dark:border-white/5 shadow-sm">
-  <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center h-20">
-    
+<header
+  class="fixed top-0 w-full z-50 transition-all duration-300 bg-white/95 dark:bg-[#050505]/95 backdrop-blur-md border-b border-gray-200 dark:border-white/5 shadow-sm"
+>
+  <div
+    class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center h-20"
+  >
     <!-- LOGO STADTBURSCHEN -->
-    <a href="/" class="flex items-center gap-2 text-xl font-serif font-bold tracking-wider text-burschen-blau dark:text-burschen-gold z-50 relative transition-colors">
-      <img src="/logo.png" alt="Stadtburschen Freising Logo" class="h-8 w-auto" /> 
-      <span>Stadtburschen-Verein</span>
+    <a
+      href="/"
+      class="flex items-center gap-2 text-xl font-serif font-bold tracking-wider text-burschen-blau dark:text-burschen-gold z-50 relative transition-colors"
+    >
+      <img
+        src="/logo.png"
+        alt="Stadtburschen Freising Logo"
+        class="h-8 w-auto"
+      />
+      <span>Stadtburschen-Verein Freising e. V.</span>
     </a>
 
     <!-- RECHTS: Navigation & Tools -->
     <div class="flex items-center gap-4 lg:gap-8">
-      
       <!-- DESKTOP NAVlk -->
       <!-- ÄNDERUNG: 'md:flex' zu 'lg:flex' geändert. 
            Das Menü erscheint jetzt erst ab großen Bildschirmen (Laptops). -->
       <nav class="hidden lg:flex gap-6 items-center">
-        {navItems.map(item => (
-          <a href={item.href} class="text-sm font-bold uppercase tracking-widest text-gray-600 hover:text-burschen-blau dark:text-gray-400 dark:hover:text-white transition-colors">
-            {item.name}
-          </a>
-        ))}
+        {
+          navItems.map((item) => (
+            <a
+              href={item.href}
+              class="text-sm font-bold uppercase tracking-widest text-gray-600 hover:text-burschen-blau dark:text-gray-400 dark:hover:text-white transition-colors"
+            >
+              {item.name}
+            </a>
+          ))
+        }
       </nav>
 
       <!-- DARK MODE TOGGLE -->
-      <button id="theme-toggle" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 transition-colors z-50 text-burschen-blau dark:text-burschen-gold">
-        <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+      <button
+        id="theme-toggle"
+        class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 transition-colors z-50 text-burschen-blau dark:text-burschen-gold"
+      >
+        <svg
+          class="w-5 h-5 hidden dark:block"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+          ></path>
         </svg>
-        <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        <svg
+          class="w-5 h-5 block dark:hidden"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+          ></path>
         </svg>
       </button>
 
       <!-- MOBILE HAMBURGER BUTTON -->
       <!-- ÄNDERUNG: 'md:hidden' zu 'lg:hidden' geändert. 
            Der Button ist jetzt auch auf Tablets sichtbar. -->
-      <button id="menu-btn" class="lg:hidden z-50 p-1 text-burschen-blau dark:text-white focus:outline-none">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-           <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      <button
+        id="menu-btn"
+        class="lg:hidden z-50 p-1 text-burschen-blau dark:text-white focus:outline-none"
+      >
+        <svg
+          class="w-8 h-8"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            id="menu-icon"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
-
     </div>
   </div>
 
   <!-- MOBILE MENU OVERLAY -->
   <!-- ÄNDERUNG: 'md:hidden' zu 'lg:hidden' geändert. -->
-  <div id="mobile-menu" class="fixed top-0 left-0 w-full h-[100dvh] z-40 bg-white dark:bg-zinc-950 flex flex-col pt-24 pb-10 px-6 transition-transform duration-300 translate-x-full lg:hidden overflow-y-auto">
-    
+  <div
+    id="mobile-menu"
+    class="fixed top-0 left-0 w-full h-[100dvh] z-40 bg-white dark:bg-zinc-950 flex flex-col pt-24 pb-10 px-6 transition-transform duration-300 translate-x-full lg:hidden overflow-y-auto"
+  >
     <div class="flex flex-col w-full max-w-sm mx-auto space-y-0">
-      {navItems.map((item, index) => (
-        <a href={item.href} class={`
+      {
+        navItems.map((item, index) => (
+          <a
+            href={item.href}
+            class={`
             group flex items-center justify-between py-5 
             text-xl font-medium tracking-wide
             text-gray-800 dark:text-gray-100 
             hover:text-burschen-blau dark:hover:text-burschen-gold
             transition-all duration-200
             border-b border-burschen-blau/10 dark:border-burschen-gold/20
-            ${index === 0 ? 'border-t' : ''} 
-        `}>
-          <span>{item.name}</span>
-          <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-burschen-blau dark:text-burschen-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
-        </a>
-      ))}
+            ${index === 0 ? "border-t" : ""} 
+        `}
+          >
+            <span>{item.name}</span>
+            <svg
+              class="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-burschen-blau dark:text-burschen-gold"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </a>
+        ))
+      }
     </div>
 
     <div class="mt-auto text-center pb-8">
-      <p class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-widest">Stadtburschen-Verein Freising e. V.</p> //
+      <p
+        class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-widest"
+      >
+        Stadtburschen-Verein Freising e. V.
+      </p> //
     </div>
-
   </div>
 </header>
 
@@ -89,34 +158,39 @@ const navItems = [
   const toggleTheme = () => {
     const element = document.documentElement;
     element.classList.toggle("dark");
-    localStorage.setItem("theme", element.classList.contains("dark") ? "dark" : "light");
+    localStorage.setItem(
+      "theme",
+      element.classList.contains("dark") ? "dark" : "light"
+    );
   };
-  document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+  document
+    .getElementById("theme-toggle")
+    ?.addEventListener("click", toggleTheme);
 
   // Mobile Menu Logic
-  const menuBtn = document.getElementById('menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const menuIcon = document.getElementById('menu-icon');
-  const menuLinks = mobileMenu?.querySelectorAll('a');
+  const menuBtn = document.getElementById("menu-btn");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const menuIcon = document.getElementById("menu-icon");
+  const menuLinks = mobileMenu?.querySelectorAll("a");
 
   const toggleMenu = () => {
-    const isOpen = mobileMenu?.classList.toggle('translate-x-full');
+    const isOpen = mobileMenu?.classList.toggle("translate-x-full");
     if (isOpen) {
-       menuIcon?.setAttribute('d', 'M4 6h16M4 12h16M4 18h16'); // Hamburger
-       document.body.style.overflow = '';
+      menuIcon?.setAttribute("d", "M4 6h16M4 12h16M4 18h16"); // Hamburger
+      document.body.style.overflow = "";
     } else {
-       menuIcon?.setAttribute('d', 'M6 18L18 6M6 6l12 12'); // X
-       document.body.style.overflow = 'hidden';
+      menuIcon?.setAttribute("d", "M6 18L18 6M6 6l12 12"); // X
+      document.body.style.overflow = "hidden";
     }
   };
 
-  menuBtn?.addEventListener('click', toggleMenu);
+  menuBtn?.addEventListener("click", toggleMenu);
 
-  menuLinks?.forEach(link => {
-    link.addEventListener('click', () => {
-      mobileMenu?.classList.add('translate-x-full');
-      menuIcon?.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
-      document.body.style.overflow = '';
+  menuLinks?.forEach((link) => {
+    link.addEventListener("click", () => {
+      mobileMenu?.classList.add("translate-x-full");
+      menuIcon?.setAttribute("d", "M4 6h16M4 12h16M4 18h16");
+      document.body.style.overflow = "";
     });
   });
 </script>
