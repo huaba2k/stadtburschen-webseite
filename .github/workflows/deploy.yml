@@ -26,19 +26,21 @@ jobs:
         npm ci
         npm run build
 
-# 3. Deployment via LFTP (Optimiert & Robust)
+    # 3. Deployment via LFTP (Optimiert & Robust)
     - name: Deploy via LFTP
+      # Secrets werden hier als Umgebungsvariablen für diesen Schritt bereitgestellt
       env:
         FTP_USER: ${{ secrets.FTP_USERNAME }}
-        # ... (Rest der Secrets) ...
+        FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+        FTP_HOST: ${{ secrets.FTP_SERVER }}
       run: |
-        # ... (Installation bleibt gleich) ...
-        echo "open -u \"$FTP_USER\",\"$FTP_PASS\" $FTP_HOST;" >> upload_script.txt
+        # LFTP installieren
+        sudo apt-get update
+        sudo apt-get install -y lftp
         
-        # NEU: Alten Inhalt löschen, um Cache-Probleme zu verhindern
-        echo "rm -rf /web/stadtburschen.de/*" >> upload_script.txt 
-
-        # Dann die neuen Dateien hochladen
+        # Skript mit korrekter Pfad- und Sync-Logik erstellen
+        echo "set ftp:ssl-allow no;" > upload_script.txt
+        echo "open -u \"$FTP_USER\",\"$FTP_PASS\" $FTP_HOST;" >> upload_script.txt
         echo "mirror -R -v --parallel=1 --no-perms --only-newer ./dist /web/stadtburschen.de/;" >> upload_script.txt
         
         # Ausführen des Deployment
