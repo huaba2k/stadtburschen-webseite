@@ -88,7 +88,7 @@ const teamSection = {
   ]
 };
 
-// 6. NEU: Das Kontaktformular (Platzhalter)
+// 6. NEU: Das Kontaktformular (Platzhalter) asdf
 const formSection = {
   name: 'formSection',
   title: 'Kontaktformular einfügen',
