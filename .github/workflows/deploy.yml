@@ -28,14 +28,23 @@ jobs:
 
     # 3. Deployment via LFTP (Optimiert & Robust)
     - name: Deploy via LFTP
-      # ... (env block bleibt) ...
+      # Secrets werden hier als Umgebungsvariablen für diesen Schritt bereitgestellt
+      env:
+        FTP_USER: ${{ secrets.FTP_USERNAME }}
+        FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+        FTP_HOST: ${{ secrets.FTP_SERVER }}
       run: |
-        # ... (Installation und open-Befehl bleiben) ...
+        # LFTP installieren
+        sudo apt-get update
+        sudo apt-get install -y lftp
 
         # NEU: Expliziter Löschbefehl im Zielordner
-        echo "rm -r /web/stadtburschen.de/*" >> upload_script.txt 
-
-        # Dann die neuen Dateien hochladen (Der Mirror-Befehl ist jetzt der Upload)
-        echo "mirror -R -v --delete --parallel=1 ./dist /web/stadtburschen.de/;" >> upload_script.txt
+        echo "rm -r /web/stadtburschen.de/*" >> upload_script.txt
         
+        # Skript mit korrekter Pfad- und Sync-Logik erstellen
+        echo "set ftp:ssl-allow no;" > upload_script.txt
+        echo "open -u \"$FTP_USER\",\"$FTP_PASS\" $FTP_HOST;" >> upload_script.txt
+        echo "mirror -R -v --parallel=1 --no-perms --only-newer ./dist /web/stadtburschen.de/;" >> upload_script.txt
+        
+        # Ausführen des Deployment
         lftp -f upload_script.txt
