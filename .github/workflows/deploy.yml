@@ -38,13 +38,13 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y lftp
 
-        # NEU: Expliziter Löschbefehl im Zielordner
-        echo "rm -r /web/stadtburschen.de/*" >> upload_script.txt
-        
-        # Skript mit korrekter Pfad- und Sync-Logik erstellen
+        # Sicherstellen, dass die Umgebungsvariablen hier genutzt werden
         echo "set ftp:ssl-allow no;" > upload_script.txt
         echo "open -u \"$FTP_USER\",\"$FTP_PASS\" $FTP_HOST;" >> upload_script.txt
-        echo "mirror -R -v --parallel=1 --no-perms --only-newer ./dist /web/stadtburschen.de/;" >> upload_script.txt
         
-        # Ausführen des Deployment
+        # WICHTIG: Mirror-Befehl mit --delete und dem korrekten Quellpfad
+        # Wir synchronisieren den Inhalt von ./dist/ in den Zielordner /web/stadtburschen.de/
+        # --delete entfernt alle Dateien im Ziel, die nicht in ./dist sind.
+        echo "mirror -R -v --delete --parallel=1 ./dist/ /web/stadtburschen.de/" >> upload_script.txt
+        
         lftp -f upload_script.txt
