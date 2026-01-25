@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+/* Ziel: Die zweite Spalte (Titelkopf TH und Datenzelle TD) breiter machen */
+article table th:nth-child(2),
+article table td:nth-child(2) {
+  /* Option A: Prozentuale Breite (nimmt sich 40% des Platzes) */
+  width: 40%;
+
+  /* Option B: Feste Mindestbreite (gut, damit Text nicht umbricht) */
+  /* min-width: 250px; */
+}
